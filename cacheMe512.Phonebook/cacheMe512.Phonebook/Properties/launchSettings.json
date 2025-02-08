@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "cacheMe512.Phonebook": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\kfilipiak\\CSharpProjects\\CodeReviews.Console.Phonebook\\cacheMe512.Phonebook\\cacheMe512.Phonebook\\"
+    }
+  }
+}
