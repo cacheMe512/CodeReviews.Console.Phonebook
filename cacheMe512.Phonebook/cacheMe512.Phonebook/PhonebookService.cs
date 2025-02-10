@@ -53,7 +53,61 @@ internal class PhonebookService
 
     internal static void UpdateContact()
     {
-        throw new NotImplementedException();
+        var contact = Utilities.GetContactOptionInput();
+
+        var attributesToUpdate = AnsiConsole.Prompt(
+            new MultiSelectionPrompt<ContactAttribute>()
+                .Title("Select attribute(s) to update (use <space> to select, <enter> to confirm):")
+                .InstructionsText("[grey](Press space to select, enter to finish)[/]")
+                .AddChoices(Enum.GetValues(typeof(ContactAttribute)).Cast<ContactAttribute>())
+        );
+
+        foreach (var attribute in attributesToUpdate)
+        {
+            switch (attribute)
+            {
+                case ContactAttribute.Name:
+                    string newName;
+                    while (true)
+                    {
+                        newName = AnsiConsole.Ask<string>("Enter new contact name:");
+                        if (Validation.IsStringValid(newName))
+                        {
+                            break;
+                        }
+                    }
+                    contact.Name = newName;
+                    break;
+
+                case ContactAttribute.PhoneNumber:
+                    string newPhone;
+                    while (true)
+                    {
+                        newPhone = AnsiConsole.Ask<string>("Enter new phone number (E.164, e.g., +14151231234):");
+                        if (Validation.IsValidPhoneNumber(newPhone))
+                        {
+                            break;
+                        }
+                    }
+                    contact.PhoneNumber = newPhone;
+                    break;
+
+                case ContactAttribute.Email:
+                    string newEmail;
+                    while (true)
+                    {
+                        newEmail = AnsiConsole.Ask<string>("Enter new email (format: local@domain.tld):");
+                        if (Validation.IsValidEmail(newEmail))
+                        {
+                            break;
+                        }
+                    }
+                    contact.Email = newEmail;
+                    break;
+            }
+        }
+
+        PhonebookController.UpdateContact(contact);
     }
 
     internal static void DeleteContact()

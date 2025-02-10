@@ -16,4 +16,13 @@ internal class Utilities
 
         return contact;
     }
+
+}
+
+
+public enum ContactAttribute
+{
+    Name,
+    PhoneNumber,
+    Email
 }
