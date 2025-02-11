@@ -17,6 +17,17 @@ internal class Utilities
         return contact;
     }
 
+    public static bool ConfirmDeletion(Contact contact)
+    {
+        var confirm = AnsiConsole.Confirm($"[red]Are you sure you want to delete contact: {contact.Name}?[/]");
+
+        return confirm;
+    }
+
+    public static void DisplayMessage(string message, string color = "yellow")
+    {
+        AnsiConsole.MarkupLine($"[{color}]{message}[/]");
+    }
 }
 
 

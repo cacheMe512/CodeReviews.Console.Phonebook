@@ -38,12 +38,12 @@ internal class PhonebookController
         db.SaveChanges();
     }
 
-    internal static void DeleteContact(Contact contact)
+    internal static bool DeleteContact(Contact contact)
     {
         using var db = new PhonebookContext();
 
         db.Remove(contact);
 
-        db.SaveChanges();
+        return db.SaveChanges() > 0;
     }
 }

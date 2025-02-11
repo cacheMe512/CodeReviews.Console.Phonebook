@@ -112,8 +112,36 @@ internal class PhonebookService
 
     internal static void DeleteContact()
     {
-        throw new NotImplementedException();
+        var contact = Utilities.GetContactOptionInput();
+        if (contact == null)
+        {
+            Utilities.DisplayMessage("No contacts available to delete.", "cyan");
+            Utilities.DisplayMessage("\nPress Any Key to Continue.");
+            Console.ReadKey();
+            return;
+        }
+
+        if (!Utilities.ConfirmDeletion(contact))
+        {
+            Utilities.DisplayMessage("Deletion cancelled.", "cyan");
+            return;
+        }
+
+        try
+        {
+            bool deletionSucceeded = PhonebookController.DeleteContact(contact);
+            if (deletionSucceeded)
+            {
+                Utilities.DisplayMessage("Contact deleted successfully!", "green");
+            }
+            else
+            {
+                Utilities.DisplayMessage("Failed to delete contact.", "red");
+            }
+        }
+        catch (Exception ex)
+        {
+            Utilities.DisplayMessage($"An error occurred during deletion: {ex.Message}", "red");
+        }
     }
-
-
 }
