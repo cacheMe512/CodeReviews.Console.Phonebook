@@ -1,19 +1,22 @@
 ﻿
 using cacheMe512.Phonebook;
+using cacheMe512.Phonebook.Models;
+using cacheMe512.Phonebook.Controllers;
 using Spectre.Console;
+using cacheMe512.Phonebook.Services;
 
-internal class PhonebookService
+internal class ContactService
 {
 
     internal static void GetContacts()
     {
-        var contacts = PhonebookController.GetContacts();
+        var contacts = ContactController.GetContacts();
         UserInterface.ShowContactTable(contacts);
     }
 
     internal static void GetContact()
     {
-        var contact = Utilities.GetContactOptionInput();
+        var contact = GetContactOptionInput();
         UserInterface.ShowContact(contact);
     }
 
@@ -48,25 +51,27 @@ internal class PhonebookService
             }
         }
 
-        PhonebookController.AddContact(contact);
+        contact.CategoryId = CategoryService.GetCategoryOptionInput().CategoryId;
+
+        ContactController.AddContact(contact);
     }
 
     internal static void UpdateContact()
     {
-        var contact = Utilities.GetContactOptionInput();
+        var contact = GetContactOptionInput();
 
         var attributesToUpdate = AnsiConsole.Prompt(
-            new MultiSelectionPrompt<ContactAttribute>()
+            new MultiSelectionPrompt<Enums.ContactAttribute>()
                 .Title("Select attribute(s) to update (use <space> to select, <enter> to confirm):")
                 .InstructionsText("[grey](Press space to select, enter to finish)[/]")
-                .AddChoices(Enum.GetValues(typeof(ContactAttribute)).Cast<ContactAttribute>())
+                .AddChoices(Enum.GetValues(typeof(Enums.ContactAttribute)).Cast<Enums.ContactAttribute>())
         );
 
         foreach (var attribute in attributesToUpdate)
         {
             switch (attribute)
             {
-                case ContactAttribute.Name:
+                case Enums.ContactAttribute.Name:
                     string newName;
                     while (true)
                     {
@@ -79,7 +84,7 @@ internal class PhonebookService
                     contact.Name = newName;
                     break;
 
-                case ContactAttribute.PhoneNumber:
+                case Enums.ContactAttribute.PhoneNumber:
                     string newPhone;
                     while (true)
                     {
@@ -92,7 +97,7 @@ internal class PhonebookService
                     contact.PhoneNumber = newPhone;
                     break;
 
-                case ContactAttribute.Email:
+                case Enums.ContactAttribute.Email:
                     string newEmail;
                     while (true)
                     {
@@ -104,15 +109,20 @@ internal class PhonebookService
                     }
                     contact.Email = newEmail;
                     break;
+                case Enums.ContactAttribute.Category:
+
+                    contact.CategoryId = CategoryService.GetCategoryOptionInput().CategoryId;
+
+                    break;
             }
         }
 
-        PhonebookController.UpdateContact(contact);
+        ContactController.UpdateContact(contact);
     }
 
     internal static void DeleteContact()
     {
-        var contact = Utilities.GetContactOptionInput();
+        var contact = GetContactOptionInput();
         if (contact == null)
         {
             Utilities.DisplayMessage("No contacts available to delete.", "cyan");
@@ -129,7 +139,7 @@ internal class PhonebookService
 
         try
         {
-            bool deletionSucceeded = PhonebookController.DeleteContact(contact);
+            bool deletionSucceeded = ContactController.DeleteContact(contact);
             if (deletionSucceeded)
             {
                 Utilities.DisplayMessage("Contact deleted successfully!", "green");
@@ -143,5 +153,18 @@ internal class PhonebookService
         {
             Utilities.DisplayMessage($"An error occurred during deletion: {ex.Message}", "red");
         }
+    }
+
+    static internal Contact GetContactOptionInput()
+    {
+        var contacts = ContactController.GetContacts();
+        var contactsArray = contacts.Select(x => x.Name).ToArray();
+        var option = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("Choose Contact")
+            .AddChoices(contactsArray));
+        var id = contacts.Single(x => x.Name == option).ContactId;
+        var contact = ContactController.GetContactById(id);
+
+        return contact;
     }
 }

@@ -1,6 +1,9 @@
-﻿namespace cacheMe512.Phonebook;
+﻿using cacheMe512.Phonebook.Models;
+using System.Security.Cryptography.X509Certificates;
 
-internal class PhonebookController
+namespace cacheMe512.Phonebook.Controllers;
+
+internal class ContactController
 {
     internal static List<Contact> GetContacts()
     {
@@ -15,7 +18,8 @@ internal class PhonebookController
     {
         using var db = new PhonebookContext();
 
-        var contact = db.Contacts.SingleOrDefault(x => x.Id == id);
+        var contact = db.Contacts
+            .SingleOrDefault(x => x.ContactId == id);
 
         return contact;
     }
