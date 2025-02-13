@@ -1,6 +1,5 @@
 ﻿using cacheMe512.Phonebook.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 
 namespace cacheMe512.Phonebook.Controllers;
 

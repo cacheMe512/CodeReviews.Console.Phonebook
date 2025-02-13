@@ -1,5 +1,4 @@
-﻿using cacheMe512.Phonebook.Controllers;
-using cacheMe512.Phonebook.Models;
+﻿using cacheMe512.Phonebook.Models;
 using Spectre.Console;
 
 namespace cacheMe512.Phonebook;
