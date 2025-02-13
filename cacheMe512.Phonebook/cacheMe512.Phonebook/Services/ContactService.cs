@@ -11,12 +11,24 @@ internal class ContactService
     internal static void GetContacts()
     {
         var contacts = ContactController.GetContacts();
+
+        if (!contacts.Any())
+        {
+            Utilities.DisplayMessage("No contacts available.", "cyan");
+            Utilities.DisplayMessage("\nPress any key to continue...");
+            Console.ReadKey();
+            return;
+        }
+
         UserInterface.ShowContactTable(contacts);
     }
 
     internal static void GetContact()
     {
         var contact = GetContactOptionInput();
+
+        if (contact == null) return;
+
         UserInterface.ShowContact(contact);
     }
 
@@ -51,14 +63,34 @@ internal class ContactService
             }
         }
 
-        contact.CategoryId = CategoryService.GetCategoryOptionInput().CategoryId;
+        var selectedCategory = CategoryService.GetCategoryOptionInput();
+
+        if (selectedCategory == null)
+        {
+            Utilities.DisplayMessage("No valid category selected. Contact not created.", "red");
+            Utilities.DisplayMessage("\nPress any key to continue...");
+            Console.ReadKey();
+            return;
+        }
+
+        contact.CategoryId = selectedCategory.CategoryId;
 
         ContactController.AddContact(contact);
+        Utilities.DisplayMessage("Contact added successfully!", "green");
     }
+
 
     internal static void UpdateContact()
     {
         var contact = GetContactOptionInput();
+
+        if (contact == null)
+        {
+            Utilities.DisplayMessage("No contacts available to update.", "cyan");
+            Utilities.DisplayMessage("\nPress any key to continue...");
+            Console.ReadKey();
+            return;
+        }
 
         var attributesToUpdate = AnsiConsole.Prompt(
             new MultiSelectionPrompt<Enums.ContactAttribute>()
@@ -109,15 +141,19 @@ internal class ContactService
                     }
                     contact.Email = newEmail;
                     break;
+
                 case Enums.ContactAttribute.Category:
-
-                    contact.CategoryId = CategoryService.GetCategoryOptionInput().CategoryId;
-
+                    var category = CategoryService.GetCategoryOptionInput();
+                    if (category != null)
+                    {
+                        contact.Category = category;
+                    }
                     break;
             }
         }
 
         ContactController.UpdateContact(contact);
+        Utilities.DisplayMessage("Contact updated successfully!", "green");
     }
 
     internal static void DeleteContact()
@@ -158,13 +194,22 @@ internal class ContactService
     static internal Contact GetContactOptionInput()
     {
         var contacts = ContactController.GetContacts();
+
+        if (!contacts.Any())
+        {
+            Utilities.DisplayMessage("No contacts available to select.", "cyan");
+            Utilities.DisplayMessage("\nPress any key to continue...");
+            Console.ReadKey();
+            return null;
+        }
+
         var contactsArray = contacts.Select(x => x.Name).ToArray();
         var option = AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title("Choose Contact")
             .AddChoices(contactsArray));
-        var id = contacts.Single(x => x.Name == option).ContactId;
-        var contact = ContactController.GetContactById(id);
 
-        return contact;
+        var id = contacts.Single(x => x.Name == option).ContactId;
+        return ContactController.GetContactById(id);
     }
+
 }

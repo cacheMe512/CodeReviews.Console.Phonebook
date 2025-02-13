@@ -11,7 +11,7 @@ internal class PhonebookContext: DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=(LocalDb)\\mssqllocaldb;Database=Phonebook;Trusted_Connection=True;")
+        optionsBuilder.UseSqlServer("Server=(LocalDb)\\LocalDBDemo;Database=Phonebook;Trusted_Connection=True;")
                       .ConfigureWarnings(warnings =>
                             warnings.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning));
     }

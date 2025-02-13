@@ -11,8 +11,8 @@ using cacheMe512.Phonebook;
 namespace cacheMe512.Phonebook.Migrations
 {
     [DbContext(typeof(PhonebookContext))]
-    [Migration("20250212231104_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20250213161335_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

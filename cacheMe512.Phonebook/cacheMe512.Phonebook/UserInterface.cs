@@ -16,8 +16,8 @@ internal class UserInterface
             new SelectionPrompt<MainMenuOptions>()
             .Title("What would you like to do?")
             .AddChoices(
-                MainMenuOptions.ManageCategories,
                 MainMenuOptions.ManageContacts,
+                MainMenuOptions.ManageCategories,
                 MainMenuOptions.Quit));
 
             switch (option)
@@ -148,12 +148,13 @@ Contacts: {category.Contacts.Count}");
 
         AnsiConsole.Write(panel);
 
-        ShowContactTable(category.Contacts);
+        ShowContactTable(category.Contacts, showReturnMessage: false);
 
         Console.WriteLine("Press Any Key to Return to Menu");
         Console.ReadLine();
         Console.Clear();
     }
+
 
     internal static void ShowContact(Contact contact)
     {
@@ -172,7 +173,7 @@ Category: {contact.Category.Name}");
         Console.Clear();
     }
 
-    static internal void ShowContactTable(List<Contact> contacts)
+    static internal void ShowContactTable(List<Contact> contacts, bool showReturnMessage = true)
     {
         var table = new Table();
         table.AddColumn("Id");
@@ -189,13 +190,17 @@ Category: {contact.Category.Name}");
                 contact.PhoneNumber,
                 contact.Email,
                 contact.Category.Name
-                );
+            );
         }
 
         AnsiConsole.Write(table);
 
-        Console.WriteLine("Enter any key to go back to Main Menu");
-        Console.ReadLine();
-        Console.Clear();
+        if (showReturnMessage)
+        {
+            Console.WriteLine("Enter any key to go back to Main Menu");
+            Console.ReadLine();
+            Console.Clear();
+        }
     }
+
 }

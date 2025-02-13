@@ -1,4 +1,5 @@
 ﻿using cacheMe512.Phonebook.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.X509Certificates;
 
 namespace cacheMe512.Phonebook.Controllers;
@@ -9,7 +10,9 @@ internal class ContactController
     {
         using var db = new PhonebookContext();
 
-        var contacts = db.Contacts.ToList();
+        var contacts = db.Contacts
+            .Include(x => x.Category)
+            .ToList();
 
         return contacts;
     }
@@ -19,6 +22,7 @@ internal class ContactController
         using var db = new PhonebookContext();
 
         var contact = db.Contacts
+            .Include(x => x.Category)
             .SingleOrDefault(x => x.ContactId == id);
 
         return contact;
